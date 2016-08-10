@@ -1,4 +1,4 @@
-This project was inspired by the Stanford MOOC CS183, (Startup Engineering)[http://online.stanford.edu/course/startup-engineering]
+This project was inspired by the Stanford MOOC CS183, [Startup Engineering](http://online.stanford.edu/course/startup-engineering])
 
 Startup Engineering was a fantastic class that provided many people interested creating a Startup a basic technology stack to build up their business.
 
