@@ -1,0 +1,8 @@
+- name: Kick off installation & setup process
+  hosts: localhost
+  tasks:
+    - include: mac_host.yaml
+      when: ansible_distribution == "MacOSX"
+
+    - include: rhel_host.yaml
+      when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= "7"

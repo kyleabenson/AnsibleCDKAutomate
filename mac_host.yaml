@@ -1,0 +1,15 @@
+---
+- name: Setup VirtualBox and Vagrant for MacOS to use CDK
+  hosts: localhost
+  become_user: root
+  become: yes
+
+  tasks:
+    ## Should check to see if Brew is installed in future iteration
+    - name: Install Virtualbox via brew
+      command: /usr/local/bin/brew cask install virtualbox
+
+    - name: Install Vagrant via brew
+      command: /usr/local/bin/brew cask install Vagrant
+
+    - name: Install OC package to connect Openshift instance

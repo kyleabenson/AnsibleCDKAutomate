@@ -1,0 +1,11 @@
+---
+# Need to read up on Vagrant deployment via Ansible
+# Making the decision to use standard subscription-manager commands via an ansible-playbook rather than vagrant plugins as I believe it provides
+# greater visibility into what's happening that the plugins offer
+
+# Not including the 'username' and 'password' variables here will prompt for entry. Optionally you can store these as variables in an ansible-vault
+# encrypted file
+- name: Register system with Red Hat Subscription Management
+  redhat_subscription:
+    state: present
+    autosubscribe: true
