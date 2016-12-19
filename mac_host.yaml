@@ -1,15 +1,32 @@
 ---
-- name: Setup VirtualBox and Vagrant for MacOS to use CDK
-  hosts: localhost
-  become_user: root
-  become: yes
 
-  tasks:
+# Commented out as a task file for deploy_container_local.yaml
+#  hosts: localhost
+#  tasks:
+    - name: Check to see if brew is installed in default path of /usr/local/bin
+      stat:
+        path: /usr/local/bin/brew
+      register: brew_exists
+
+    - name: If brew isn't installed, install it
+      command: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      when: brew_exists.stat.exists == False
+
+
     ## Should check to see if Brew is installed in future iteration
     - name: Install Virtualbox via brew
-      command: /usr/local/bin/brew cask install virtualbox
+      homebrew_cask:
+        name: virtualbox
+        state: present
+        install_options: 'appdir=/Applications'
 
     - name: Install Vagrant via brew
-      command: /usr/local/bin/brew cask install Vagrant
+      homebrew_cask:
+        name: vagrant
+        state: present
+        install_options: 'appdir=/Applications'
 
     - name: Install OC package to connect Openshift instance
+      homebrew:
+        name: openshift-cli
+        state: present

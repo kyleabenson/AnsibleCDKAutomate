@@ -1,8 +1,77 @@
-- name: Kick off installation & setup process
-  hosts: localhost
+---
+- hosts: localhost
+  vars:
+    box_path: "{{ box_path }}"
+    zip_path: "{{ zip_path }}"
   tasks:
     - include: mac_host.yaml
       when: ansible_distribution == "MacOSX"
 
+    - debug:
+          msg: "Using a Mac"
+      when: ansible_distribution == "MacOSX"
+
     - include: rhel_host.yaml
       when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= "7"
+
+    - debug:
+        msg: "Using RHEL"
+      when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= "7"
+
+- hosts: localhost
+  vars:
+    env_home: "{{ lookup('env','HOME') }}"
+  vars_prompt:
+    name: "cdk_dir"
+    prompt: "What directory would you like to place the CDK Vagrant box and CDK.zip in? If unspecificed the default is"
+    default: "{{env_home}}/CDK"
+    private: no
+
+  tasks:
+  - name: Create directory if non-existent
+    file:
+      path: "{{ cdk_dir }}"
+      state: directory
+      force: yes
+    register: result
+
+  - name: Copy CDK.zip to working directory
+    copy:
+        src: "{{ zip_path }}"
+        dest: "{{ cdk_dir }}"
+
+  - name: Copy Vagrant box to working directory
+    copy:
+        src: "{{ box_path }}"
+        dest: "{{ cdk_dir }}"
+
+
+  - name: Need the full filename in order to perform an unarchive
+    find:
+      paths: "{{ cdk_dir }}"
+      patterns: "*.zip"
+    register: cdk_result
+
+  - name: Need the full filename in directory to start up box with approriate Vagrantfile
+    find:
+      paths: "{{ cdk_dir }}"
+      patterns: "*.box"
+    register: box_result
+
+  - name: Unarchive the CDK directory
+    unarchive:
+      src: "{{ cdk_result.files[0].path }}"
+      dest: "{{ cdk_dir }}"
+
+  - name: Install the vagrant plugins
+    command: vagrant plugin install  "{{ item }}"
+    with_items:
+      - "{{ cdk_dir }}/cdk/plugins/vagrant-registration-*.gem"
+      - "{{ cdk_dir }}/cdk/plugins/vagrant-service-manager-*.gem"
+      - "{{ cdk_dir }}/cdk/plugins/vagrant-sshfs-*.gem"
+
+  - name: Add the vagrant box to vagrant inventory
+    command: vagrant box add --name cdkv2 "{{ box_path }}"
+
+  - name: Bring up the Vagrantbox with the OSE Vagrantfile
+    command: chdir= "{{ cdk_dir }}/cdk/components/rhel/rhel-ose" vagrant up
