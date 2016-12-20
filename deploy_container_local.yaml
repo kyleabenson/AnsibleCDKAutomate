@@ -64,14 +64,17 @@
       dest: "{{ cdk_dir }}"
 
   - name: Install the vagrant plugins
-    command: vagrant plugin install  "{{ item }}"
+    shell: chdir="{{ cdk_dir }}/cdk/plugins/"  executable=/bin/bash vagrant plugin install  "{{ item }}"
     with_items:
-      - "{{ cdk_dir }}/cdk/plugins/vagrant-registration-*.gem"
-      - "{{ cdk_dir }}/cdk/plugins/vagrant-service-manager-*.gem"
-      - "{{ cdk_dir }}/cdk/plugins/vagrant-sshfs-*.gem"
+      - "vagrant-registration"
+      - "vagrant-service-manager"
+      - "vagrant-sshfs"
 
+### Need to write a way to handle error code when box is already installed..
   - name: Add the vagrant box to vagrant inventory
     command: vagrant box add --name cdkv2 "{{ box_path }}"
 
   - name: Bring up the Vagrantbox with the OSE Vagrantfile
-    command: chdir= "{{ cdk_dir }}/cdk/components/rhel/rhel-ose" vagrant up
+    shell:  /usr/local/bin/vagrant up
+    args:
+      chdir: "{{ cdk_dir }}/cdk/components/rhel/rhel-ose/"

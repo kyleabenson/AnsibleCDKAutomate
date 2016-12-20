@@ -3,11 +3,11 @@
 # Install homebrew, pip, Vagrant, & Ansible
 # Check to see if this is Mac OSX or Fedora-based Linux
   platform='unknown'
-  if [[ $OSTYPE == "linux-gnu" ]]; then
+  unamestr=`uname`
+  if [[ "$unamestr" == 'Linux' ]]; then
     platform='linux'
-  elif [[ $OSTYPE == 'darwin15' ]]; then
+  elif [[ "$unamestr" == 'Darwin'* ]]; then
     platform='darwin'
-    echo "Using a Mac"
   else
     echo "This tool is currently only supported on Mac OS X or Fedora distros. Sorry!"
   fi
