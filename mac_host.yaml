@@ -9,7 +9,7 @@
       register: brew_exists
 
     - name: If brew isn't installed, install it
-      command: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
       when: brew_exists.stat.exists == False
 
 
