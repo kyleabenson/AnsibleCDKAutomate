@@ -1,0 +1,34 @@
+---
+# Commented out as a task file for deploy_container_local.yaml
+  # hosts: localhost
+  # tasks:
+
+   # KVM Virt tools for RHEL
+   # Installing ALL the virt packages since it's tough to tell which is absolutely necessary for Vagrant
+- name: Install KVM on RHEL systems if not present
+  become_user: root
+  become: yes
+  
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+        - qemu-kvm
+        - qemu-img
+        - libvirt
+        - virt-install
+        - libvirt-python
+        - virt-manager
+        - virt-install
+        - libvirt-client
+
+- name: Install Vagrant via URL
+  yum:
+       name: https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.rpm
+       state: latest
+
+- name: Install OC cli tool from upstream Git repo. No way to do this directly from a RH Supported method..
+  unarchive:
+    src: https://github.com/openshift/origin/releases/download/v1.3.2/openshift-origin-client-tools-v1.3.2-ac1d579-linux-64bit.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
