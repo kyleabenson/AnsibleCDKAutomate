@@ -24,4 +24,11 @@ This play-book makes several assumptions in order to accomplish ease of installa
 Using homebrew to install packages on MacOSX
 Using specific virtualization products for each OS: On MacOS this is Virtualbox and on RHEL it is the standard KVM tools
 
+For MacOS, specific versions of both VirtualBox and Vagrant are required, specifically
+VirtualBox 5.0.26
+Vagrant 1.8.0
+
+ToDo:
+Move homebrew formulae to a git repo -- this may fix some of the weirdness with error handling from homebrew ansible modules
+
 Contributions to this project are welcome!

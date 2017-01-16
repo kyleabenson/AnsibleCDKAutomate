@@ -12,19 +12,30 @@
       shell: /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
       when: brew_exists.stat.exists == False
 
-
-    ## Should check to see if Brew is installed in future iteration
-    - name: Install Virtualbox via brew
+    ## RH CDK requires VirtualBox version 5.0.26
+    - name: Install VirtualBox 5.0.26 via brew
       homebrew_cask:
-        name: virtualbox
+        cask: virtualbox.rb
         state: present
         install_options: 'appdir=/Applications'
+      ignore_errors: true
 
-    - name: Install Vagrant via brew
+
+    ## RH CDK requires Vagrant version 1.8.0
+    - name: Install Vagrant 1.8.0 via brew
       homebrew_cask:
-        name: vagrant
+        # When homebrew_cask supports URLs, use https://raw.githubusercontent.com/caskroom/homebrew-cask/8bd4de936e673cd895c106fce2a9d740007751fa/Casks/vagrant.rb
+        cask: vagrant.rb
         state: present
-        install_options: 'appdir=/Applications'
+      ignore_errors: true
+
+    - name: Confirm that packages are present because homebrew_cask module doesn't handle local cask files or URLs appropriately
+      stat:
+        path: /usr/local/bin/'{{ item }}'
+      with_items:
+        - vagrant
+        - virtualbox
+      any_errors_fatal: true
 
     - name: Install OC package to connect Openshift instance
       homebrew:

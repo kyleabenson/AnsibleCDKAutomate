@@ -4,14 +4,10 @@
     box_path: "{{ box_path }}"
     zip_path: "{{ zip_path }}"
   tasks:
-    - include: mac_host.yaml
+    - include: tasks/mac_host.yaml
       when: ansible_distribution == "MacOSX"
 
-    - debug:
-          msg: "Using a Mac"
-      when: ansible_distribution == "MacOSX"
-
-    - include: rhel_host.yaml
+    - include: tasks/rhel_host.yaml
       when: ansible_distribution == "RedHat" and ansible_distribution_major_version >= "7"
 
     - debug:
@@ -74,7 +70,8 @@
   - name: Add the vagrant box to vagrant inventory
     command: vagrant box add --name cdkv2 "{{ box_path }}"
 
-  - name: Bring up the Vagrantbox with the OSE Vagrantfile
-    shell:  /usr/local/bin/vagrant up
-    args:
-      chdir: "{{ cdk_dir }}/cdk/components/rhel/rhel-ose/"
+  - name: Finish up and let them know it's time to start up the machine
+    debug:
+      msg: "Setup is complete, to start your vagrant box, head to {{ cdk_dir }}/cdk/components/rhel/rhel-ose and type 'vagrant up'."
+    tags:
+      - finish
