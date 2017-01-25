@@ -60,7 +60,7 @@
       dest: "{{ cdk_dir }}"
 
   - name: Install the vagrant plugins
-    shell: chdir="{{ cdk_dir }}/cdk/plugins/"  executable=/bin/bash vagrant plugin install  "{{ item }}"
+    shell: chdir="{{ cdk_dir }}/cdk/plugins/"  executable=/bin/bash vagrant plugin install "{{ item }}"
     with_items:
       - "vagrant-registration"
       - "vagrant-service-manager"
@@ -68,10 +68,10 @@
 
 ### Need to write a way to handle error code when box is already installed..
   - name: Add the vagrant box to vagrant inventory
-    command: vagrant box add --name cdkv2 "{{ box_path }}"
+    command: vagrant box add --name cdkv2 "{{ box_path }}" --force
 
   - name: Finish up and let them know it's time to start up the machine
     debug:
-      msg: "Setup is complete, to start your vagrant box, head to {{ cdk_dir }}/cdk/components/rhel/rhel-ose and type 'vagrant up'."
+      msg: "Setup is complete, to start your CDK instance, run: cd {{ cdk_dir }}/cdk/components/rhel/rhel-ose && vagrant up"
     tags:
       - finish
